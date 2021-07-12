@@ -11,7 +11,7 @@ class _DespesasPessoaisState extends State<DespesasPessoaisApp> {
 
   void _createTransaction() {
     setState(() {
-      _transactions.add(Transaction("Transação $counter"));
+      _transactions.add(Transaction("Transação $counter", DateTime.now()));
       counter++;
     });
   }
@@ -36,15 +36,21 @@ class _DespesasPessoaisState extends State<DespesasPessoaisApp> {
             return _transactions[index];
           }) : Center(child: Text(
                     "Nenhuma Transação Cadastrada!",
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 23,
+                    ),
                   )
           ),
 
-        floatingActionButton: FloatingActionButton(
-          onPressed: _createTransaction,
-          backgroundColor: Colors.yellow[600],
-          child: Icon(Icons.add, color: Colors.black,),
-        ) 
+        floatingActionButton: Container(
+          alignment: Alignment.bottomCenter,
+          child: FloatingActionButton(
+            onPressed: _createTransaction,
+            backgroundColor: Colors.yellow[600],
+            child: Icon(Icons.add, color: Colors.black,),
+          ) ,
+        )
       ),
     );
   }
