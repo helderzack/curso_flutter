@@ -1,3 +1,4 @@
+import './open-register-modal.dart';
 import './transaction.dart';
 import 'package:flutter/material.dart';
 
@@ -25,33 +26,28 @@ class _DespesasPessoaisState extends State<DespesasPessoaisApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.purple,
-          title: Text("Despesas Pessoais"),
-        ),
-
-        body: hasTransactions ? ListView.builder(
-          itemCount: _transactions.length, 
-          itemBuilder: (BuildContext context, int index) {
-            return _transactions[index];
-          }) : Center(child: Text(
-                    "Nenhuma Transação Cadastrada!",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 23,
-                    ),
-                  )
+          appBar: AppBar(
+            backgroundColor: Colors.purple,
+            title: Text("Despesas Pessoais"),
           ),
-
-        floatingActionButton: Container(
-          alignment: Alignment.bottomCenter,
-          child: FloatingActionButton(
-            onPressed: _createTransaction,
-            backgroundColor: Colors.yellow[600],
-            child: Icon(Icons.add, color: Colors.black,),
-          ) ,
-        )
-      ),
+          body: hasTransactions
+              ? ListView.builder(
+                  itemCount: _transactions.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return _transactions[index];
+                  })
+              : Center(
+                  child: Text(
+                  "Nenhuma Transação Cadastrada!",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 23,
+                  ),
+                )),
+          floatingActionButton: Container(
+            alignment: Alignment.bottomCenter,
+            child: OpenRegisterModal(),
+          )),
     );
   }
 }
