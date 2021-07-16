@@ -1,3 +1,5 @@
+import 'package:percent_indicator/percent_indicator.dart';
+
 import './open-register-modal.dart';
 import './transaction.dart';
 import 'package:flutter/material.dart';
@@ -25,12 +27,22 @@ class _DespesasPessoaisState extends State<DespesasPessoaisApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-          appBar: AppBar(
-            backgroundColor: Colors.purple,
-            title: Text("Despesas Pessoais"),
+        home: Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.purple,
+        title: Text("Despesas Pessoais"),
+      ),
+      body: Column(
+        children: [
+          RotatedBox(
+            quarterTurns: -1,
+            child: LinearPercentIndicator(
+              width: 100.0,
+              percent: 0.0,
+              progressColor: Colors.purple,
+            ),
           ),
-          body: hasTransactions
+          hasTransactions
               ? ListView.builder(
                   itemCount: _transactions.length,
                   itemBuilder: (BuildContext context, int index) {
@@ -44,11 +56,17 @@ class _DespesasPessoaisState extends State<DespesasPessoaisApp> {
                     fontSize: 23,
                   ),
                 )),
-          floatingActionButton: Container(
-            alignment: Alignment.bottomCenter,
-            child: OpenRegisterModal(),
-          )),
-    );
+        ],
+      ),
+      floatingActionButton: Container(
+        width: double.infinity,
+        height: double.infinity,
+        alignment: Alignment.bottomCenter,
+        child: OpenRegisterModal(),
+      ),
+
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+    ));
   }
 }
 
