@@ -27,7 +27,7 @@ class _OpenRegisterModalState extends State<OpenRegisterModal> {
             onPressed: () {
               showModalBottomSheet<void>(
                 context: context, builder: (BuildContext context) {
-                  return Container(
+                  return Form(
                     child: Column(
                       children: [
                         Container(

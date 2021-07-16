@@ -1,7 +1,6 @@
-import 'package:percent_indicator/percent_indicator.dart';
-
 import './open-register-modal.dart';
 import './transaction.dart';
+import 'weekly-expenditure-container.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -34,14 +33,7 @@ class _DespesasPessoaisState extends State<DespesasPessoaisApp> {
       ),
       body: Column(
         children: [
-          RotatedBox(
-            quarterTurns: -1,
-            child: LinearPercentIndicator(
-              width: 100.0,
-              percent: 0.0,
-              progressColor: Colors.purple,
-            ),
-          ),
+          WeeklyExpenditureContainer(),
           hasTransactions
               ? ListView.builder(
                   itemCount: _transactions.length,
