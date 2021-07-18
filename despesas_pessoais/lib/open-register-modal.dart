@@ -88,7 +88,6 @@ class _OpenRegisterModalState extends State<OpenRegisterModal> {
                     _valueController.text,
                     _selectedDate
                   ),
-                  // onPressed: () => print('figuring it out still'),
                   child: Text('Nova Transação'))
               ],
             )

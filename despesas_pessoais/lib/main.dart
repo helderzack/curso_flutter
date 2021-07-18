@@ -1,4 +1,5 @@
-// import './open-register-modal.dart';
+import 'package:flutter/services.dart';
+
 import './transaction.dart';
 import 'weekly-expenditure-container.dart';
 import 'package:flutter/material.dart';
@@ -72,16 +73,6 @@ class _DespesasPessoaisState extends State<DespesasPessoaisApp> {
                 )),
         ],
       ),
-      // floatingActionButton: StatefulBuilder(
-      //   builder: (context, setState) {
-      //     return Container(
-      //       width: double.infinity,
-      //       height: double.infinity,
-      //       alignment: Alignment.bottomCenter,
-      //       child: OpenRegisterModal(),
-      //     );
-      //   }
-      // ),
 
       floatingActionButton: Builder(
           builder: (context) => FloatingActionButton(
@@ -95,9 +86,6 @@ class _DespesasPessoaisState extends State<DespesasPessoaisApp> {
                     context: context,
                     builder: (BuildContext context) {
                       return Container(
-                        // child: OpenRegisterModal(
-                        //     createTransaction: _createTransaction
-                        // ),
                         child: Form(
                             child: Column(
                           children: [
@@ -111,6 +99,9 @@ class _DespesasPessoaisState extends State<DespesasPessoaisApp> {
                             Container(
                               margin: EdgeInsets.all(10),
                               child: TextField(
+                                inputFormatters: <TextInputFormatter>[
+                                  FilteringTextInputFormatter.digitsOnly
+                                ],
                                 controller: _valueController,
                                 decoration:
                                     InputDecoration(hintText: 'Valor (R\$)'),
@@ -158,7 +149,6 @@ class _DespesasPessoaisState extends State<DespesasPessoaisApp> {
                                               _valueController.text,
                                               _selectedDate);
                                         },
-                                        // onPressed: () => print('figuring it out still'),
                                         child: Text('Nova Transação'))
                                   ],
                                 )),
