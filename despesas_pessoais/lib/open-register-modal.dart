@@ -81,13 +81,14 @@ class _OpenRegisterModalState extends State<OpenRegisterModal> {
               children: [
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.purple),
-                    // onPressed: widget.createTransaction(
-                    //   _titleController.text,
-                    //   _valueController.text,
-                    //   _selectedDate
-                    // ),
-                  onPressed: () => print('figuring it out still'),
+                    primary: Colors.purple
+                  ),
+                  onPressed: widget.createTransaction(
+                    _titleController.text,
+                    _valueController.text,
+                    _selectedDate
+                  ),
+                  // onPressed: () => print('figuring it out still'),
                   child: Text('Nova Transação'))
               ],
             )
@@ -99,9 +100,9 @@ class _OpenRegisterModalState extends State<OpenRegisterModal> {
 }
 
 class OpenRegisterModal extends StatefulWidget {
-  // final Function createTransaction;
+  final Function createTransaction;
 
-  // OpenRegisterModal({this.createTransaction});
+  OpenRegisterModal({this.createTransaction});
 
   @override
   _OpenRegisterModalState createState() {

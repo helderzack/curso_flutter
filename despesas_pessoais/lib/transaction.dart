@@ -26,7 +26,7 @@ class Transaction extends StatelessWidget {
                   backgroundColor: Colors.purple[700],
                   onPressed: null,
                   child: Text(
-                    "R\$80.0",
+                    "R\$$value",
                     style: TextStyle(
                       color: Colors.white,
                     ),
