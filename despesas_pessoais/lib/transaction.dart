@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 
 class Transaction extends StatelessWidget {
   final String transaction;
+  final String value;
   final DateTime registerDate;
 
   Transaction(
-    this.transaction, 
+    this.transaction,
+    this.value,
     this.registerDate,
   );
 
@@ -51,14 +53,12 @@ class Transaction extends StatelessWidget {
                 ),
                 Container(
                   alignment: Alignment.centerRight,
-
                   child: IconButton(
-                    onPressed: () => print(this.key.hashCode),
-                    icon: Icon(
-                      Icons.delete,
-                      color: Colors.red,
-                    )
-                  ),
+                      onPressed: () => print(this.key.hashCode),
+                      icon: Icon(
+                        Icons.delete,
+                        color: Colors.red,
+                      )),
                 )
               ],
             ),
