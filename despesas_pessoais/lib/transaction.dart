@@ -55,7 +55,35 @@ class Transaction extends StatelessWidget {
                   alignment: Alignment.centerRight,
                   child: IconButton(
                       onPressed: () {
-                        this.removeTransaction(this);
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              content: Text(
+                                'Remover Transação?',
+                                style: TextStyle(fontSize: 23)
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context, 'Cancel'),
+                                  child: Text(
+                                    'Cancel',
+                                    style: TextStyle(fontSize: 20),
+                                  )
+                                ),
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context, 'OK'),
+                                  child: Text(
+                                    'OK',
+                                    style: TextStyle(fontSize: 20),
+                                  )
+                                )
+                              ],
+                            );
+                          }
+                        ).then((value) {
+                          if (value == 'OK') this.removeTransaction(this);
+                        });
                       },
                       icon: Icon(
                         Icons.delete,

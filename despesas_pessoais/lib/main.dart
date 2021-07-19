@@ -80,88 +80,92 @@ class _DespesasPessoaisState extends State<DespesasPessoaisApp> {
         ],
       ),
       floatingActionButton: Builder(
-          builder: (context) => FloatingActionButton(
-              backgroundColor: Colors.yellow[600],
-              child: Icon(
-                Icons.add,
-                color: Colors.black,
-              ),
-              onPressed: () {
-                showModalBottomSheet<void>(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return Container(
-                        child: Form(
-                            child: Column(
-                          children: [
-                            Container(
-                              margin: EdgeInsets.all(10),
-                              child: TextField(
-                                controller: _titleController,
-                                decoration: InputDecoration(hintText: 'Título'),
+        builder: (context) => FloatingActionButton(
+          backgroundColor: Colors.yellow[600],
+          child: Icon(
+              Icons.add,
+              color: Colors.black,
+          ),
+          onPressed: () {
+            showModalBottomSheet<void>(
+              context: context,
+              builder: (BuildContext context) {
+                return Container(
+                  child: Form(
+                    child: Column(
+                      children: [
+                        Container(
+                          margin: EdgeInsets.all(10),
+                          child: TextField(
+                            controller: _titleController,
+                            decoration: InputDecoration(hintText: 'Título'),
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.all(10),
+                          child: TextField(
+                            inputFormatters: <TextInputFormatter>[
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
+                            controller: _valueController,
+                            decoration: InputDecoration(hintText: 'Valor (R\$)'),
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.all(10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Data Selecionada: ${_checkSelectedDateField() ? '' : _dateFormatter.format(_selectedDate)}'
                               ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.all(10),
-                              child: TextField(
-                                inputFormatters: <TextInputFormatter>[
-                                  FilteringTextInputFormatter.digitsOnly
-                                ],
-                                controller: _valueController,
-                                decoration:
-                                    InputDecoration(hintText: 'Valor (R\$)'),
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.all(10),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                      'Data Selecionada: ${_checkSelectedDateField() ? '' : _dateFormatter.format(_selectedDate)}'),
-                                  TextButton(
-                                      style: TextButton.styleFrom(
-                                        primary: Colors.purple,
-                                      ),
-                                      onPressed: () {
-                                        showDatePicker(
-                                          context: context,
-                                          initialDate: DateTime.now(),
-                                          firstDate: DateTime(2001),
-                                          lastDate: DateTime(2050),
-                                        ).then(
-                                            (date) => _setSelectedDate(date));
-                                      },
-                                      child: Text(
-                                        'Selecionar Data',
-                                      ))
-                                ],
-                              ),
-                            ),
-                            Container(
-                                margin: EdgeInsets.all(10),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                            primary: Colors.purple),
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                          _createTransaction(
-                                              _titleController.text,
-                                              _valueController.text,
-                                              _selectedDate);
-                                        },
-                                        child: Text('Nova Transação'))
-                                  ],
-                                )),
-                          ],
-                        )),
-                      );
-                    });
-              })),
+                              TextButton(
+                                style: TextButton.styleFrom(
+                                  primary: Colors.purple,
+                                ),
+                                onPressed: () {
+                                  showDatePicker(
+                                    context: context,
+                                    initialDate: DateTime.now(),
+                                    firstDate: DateTime(2001),
+                                    lastDate: DateTime(2050),
+                                    ).then((date) => _setSelectedDate(date));
+                                },
+                                child: Text('Selecionar Data',)
+                              )
+                            ],
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.all(10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  primary: Colors.purple),
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                    _createTransaction(
+                                      _titleController.text,
+                                      _valueController.text,
+                                      _selectedDate
+                                    );
+                                  },
+                                  child: Text('Nova Transação')
+                              )
+                            ],
+                          )
+                        ),
+                      ],
+                    )
+                  ),
+                );
+              }
+            );
+          }
+        )
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     ));
   }
