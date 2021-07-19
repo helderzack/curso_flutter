@@ -17,12 +17,19 @@ class _DespesasPessoaisState extends State<DespesasPessoaisApp> {
   final _valueController = TextEditingController();
   final _dateFormatter = DateFormat('yMMMMd');
 
+  void _removeTransaction(Transaction transaction) {
+    setState(() {
+      _transactions.remove(transaction);
+    });
+  }
+
   void _createTransaction(String title, String value, DateTime selectedDate) {
     print(title);
     print(value);
     print(selectedDate.toString());
     setState(() {
-      _transactions.add(Transaction(title, value, _selectedDate));
+      _transactions
+          .add(Transaction(title, value, _selectedDate, _removeTransaction));
     });
   }
 
@@ -57,11 +64,10 @@ class _DespesasPessoaisState extends State<DespesasPessoaisApp> {
           hasTransactions
               ? Expanded(
                   child: ListView.builder(
-                    itemCount: _transactions.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return _transactions[index];
-                    }
-                  ),
+                      itemCount: _transactions.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return _transactions[index];
+                      }),
                 )
               : Center(
                   child: Text(
@@ -73,7 +79,6 @@ class _DespesasPessoaisState extends State<DespesasPessoaisApp> {
                 )),
         ],
       ),
-
       floatingActionButton: Builder(
           builder: (context) => FloatingActionButton(
               backgroundColor: Colors.yellow[600],
@@ -157,7 +162,6 @@ class _DespesasPessoaisState extends State<DespesasPessoaisApp> {
                       );
                     });
               })),
-
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     ));
   }

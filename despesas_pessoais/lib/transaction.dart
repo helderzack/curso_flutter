@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class Transaction extends StatelessWidget {
   final String transaction;
   final String value;
   final DateTime registerDate;
+  final Function removeTransaction;
+  final DateFormat dateFormatter = DateFormat('yMMMMd');
 
   Transaction(
-    this.transaction,
-    this.value,
-    this.registerDate,
-  );
+      this.transaction, this.value, this.registerDate, this.removeTransaction);
 
   Widget build(BuildContext context) {
     return Container(
@@ -45,7 +45,7 @@ class Transaction extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        registerDate.toString(),
+                        '${dateFormatter.format(registerDate)}',
                         style: TextStyle(color: Colors.grey),
                       ),
                     ],
@@ -54,7 +54,9 @@ class Transaction extends StatelessWidget {
                 Container(
                   alignment: Alignment.centerRight,
                   child: IconButton(
-                      onPressed: () => print(this.key.hashCode),
+                      onPressed: () {
+                        this.removeTransaction(this);
+                      },
                       icon: Icon(
                         Icons.delete,
                         color: Colors.red,
