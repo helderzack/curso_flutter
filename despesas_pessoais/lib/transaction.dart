@@ -9,7 +9,11 @@ class Transaction extends StatelessWidget {
   final DateFormat dateFormatter = DateFormat('yMMMMd');
 
   Transaction(
-      this.transaction, this.value, this.registerDate, this.removeTransaction);
+    this.transaction, 
+    this.value, 
+    this.registerDate, 
+    this.removeTransaction
+  );
 
   Widget build(BuildContext context) {
     return Container(
