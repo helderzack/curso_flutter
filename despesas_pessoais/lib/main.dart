@@ -73,10 +73,10 @@ class _DespesasPessoaisState extends State<DespesasPessoaisApp> {
                 )
               : Center(
                   child: Text(
-                  "Nenhuma Transação Cadastrada!",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 23,
+                    'Nenhuma Transação Cadastrada!',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    fontSize: 20,
                   ),
                 )),
         ],

@@ -1,16 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import './day-expenditure.dart';
 
 class WeeklyExpenditureContainerState
     extends State<WeeklyExpenditureContainer> {
   final _daysOfTheWeek =
-      List<DayExpenditure>.generate(7, (index) => DayExpenditure());
+      List<DayExpenditure>.generate(
+        7, (index) => 
+        DayExpenditure(
+          0.0, 
+          0.0, 
+          DateFormat('EEEE').
+            format(DateTime.now().
+            add(Duration(days: index))
+          ).substring(0, 1)
+        )
+      );
+  final totalExpenditure = 0.0;
 
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      margin: EdgeInsets.only(left: 10, top: 10, right: 10, bottom: 30),
+      margin: EdgeInsets.only(left: 10, top: 20, right: 10, bottom: 30),
       child: Card(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
