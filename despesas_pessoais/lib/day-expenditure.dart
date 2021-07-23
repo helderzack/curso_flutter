@@ -10,7 +10,6 @@ class DayExpenditureState extends State<DayExpenditure> {
     setState(() {
       this.amountSpent += amountSpent;
     });
-    // this.amountSpent += amountSpent;
     print('Amount spent in element: $percentage');
   }
 
@@ -18,7 +17,6 @@ class DayExpenditureState extends State<DayExpenditure> {
     setState(() {
       this.percentage = percentage;
     });
-    // this.percentage = percentage;
     print('Percentage: $percentage');
   }
 
@@ -26,7 +24,6 @@ class DayExpenditureState extends State<DayExpenditure> {
     setState(() {
       this.amountSpent -= amountNotSpent;
     });
-    // this.amountSpent -= amountNotSpent;
     print('Amount spent in element: $percentage');
   }
 

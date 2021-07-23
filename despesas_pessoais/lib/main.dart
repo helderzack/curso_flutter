@@ -49,7 +49,6 @@ class _DespesasPessoaisState extends State<DespesasPessoaisApp> {
     setState(() {
       this._selectedDate = selectedDate;
     });
-    print(_selectedDate);
   }
 
   bool _checkSelectedDateField() {

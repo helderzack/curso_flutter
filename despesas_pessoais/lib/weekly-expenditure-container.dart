@@ -16,7 +16,9 @@ class WeeklyExpenditureContainerState
   final totalExpenditure = 0.0;
 
   void updateWeeklyExpenditureState(DateTime selectedDate, double amountSpent) {
-    weeklyAmountSpent += amountSpent;
+    setState(() {
+      weeklyAmountSpent += amountSpent;
+    });
 
     print('Weekly spent: $weeklyAmountSpent');
 
@@ -37,7 +39,9 @@ class WeeklyExpenditureContainerState
   }
 
   void removeExpenditure(DateTime registerDate, double value) {
-    weeklyAmountSpent -= value;
+    setState(() {
+      weeklyAmountSpent -= value;
+    });
 
     print('Weekly spent: $weeklyAmountSpent');
 
