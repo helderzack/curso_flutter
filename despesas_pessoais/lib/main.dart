@@ -9,6 +9,8 @@ void main() {
   runApp(DespesasPessoaisApp());
 }
 
+GlobalKey<WeeklyExpenditureContainerState> weeklyExpenditureKey = GlobalKey();
+
 class _DespesasPessoaisState extends State<DespesasPessoaisApp> {
   List<Transaction> _transactions = [];
   DateTime _selectedDate;
@@ -20,9 +22,14 @@ class _DespesasPessoaisState extends State<DespesasPessoaisApp> {
   final _dateFormatter = DateFormat('yMMMMd');
 
   void _removeTransaction(Transaction transaction) {
+    String value = transaction.value;
+    DateTime registerDate = transaction.registerDate;
+
     setState(() {
       _transactions.remove(transaction);
     });
+
+    weeklyExpenditureKey.currentState.removeExpenditure(registerDate, double.parse(value));
   }
 
   void _createTransaction(String title, String value, DateTime selectedDate) {
@@ -33,6 +40,9 @@ class _DespesasPessoaisState extends State<DespesasPessoaisApp> {
       _transactions
           .add(Transaction(title, value, _selectedDate, _removeTransaction));
     });
+
+    weeklyExpenditureKey.currentState
+        .updateWeeklyExpenditureState(selectedDate, double.parse(value));
   }
 
   void _setSelectedDate(DateTime selectedDate) {
@@ -62,7 +72,7 @@ class _DespesasPessoaisState extends State<DespesasPessoaisApp> {
       ),
       body: Column(
         children: [
-          WeeklyExpenditureContainer(),
+          WeeklyExpenditureContainer(key: weeklyExpenditureKey),
           hasTransactions
               ? Expanded(
                   child: ListView.builder(
@@ -72,13 +82,52 @@ class _DespesasPessoaisState extends State<DespesasPessoaisApp> {
                       }),
                 )
               : Center(
-                  child: Text(
-                    'Nenhuma Transação Cadastrada!',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                  ),
-                )),
+                  child: Column(
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(bottom: 15),
+                        child: Text(
+                          'Nenhuma Transação Cadastrada!',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                          ),
+                        ),
+                      ),
+                      RotationTransition(
+                        turns: AlwaysStoppedAnimation(350 / 360),
+                        child: Text(
+                          'Z',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 70,
+                          ),
+                        ),
+                      ),
+                      RotationTransition(
+                        turns: AlwaysStoppedAnimation(200 / 360),
+                        child: Text(
+                          'Z',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 70,
+                          ),
+                        ),
+                      ),
+                      RotationTransition(
+                        turns: AlwaysStoppedAnimation(340 / 360),
+                        child: Text(
+                          'Z',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 70,
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                ),
+                
         ],
       ),
       floatingActionButton: Builder(
@@ -142,8 +191,9 @@ class _DespesasPessoaisState extends State<DespesasPessoaisApp> {
                                             showDatePicker(
                                               context: context,
                                               initialDate: DateTime.now(),
-                                              firstDate: DateTime(2001),
-                                              lastDate: DateTime(2050),
+                                              firstDate: DateTime.now(),
+                                              lastDate: DateTime.now()
+                                                  .add(Duration(days: 6)),
                                             ).then((date) =>
                                                 _setSelectedDate(date));
                                           },
@@ -163,18 +213,18 @@ class _DespesasPessoaisState extends State<DespesasPessoaisApp> {
                                                 primary: Colors.purple),
                                             onPressed: () {
                                               if (_formKey.currentState
-                                                  .validate() == false) {
-                                                    ScaffoldMessenger.of(context)
+                                                      .validate() ==
+                                                  false) {
+                                                ScaffoldMessenger.of(context)
                                                     .showSnackBar(SnackBar(
-                                                      content: Text('Preencha todos os campos!')
-                                                    ));
+                                                        content: Text(
+                                                            'Preencha todos os campos!')));
                                               } else {
                                                 Navigator.pop(context);
                                                 _createTransaction(
-                                                  _titleController.text,
-                                                  _valueController.text,
-                                                  _selectedDate
-                                                );
+                                                    _titleController.text,
+                                                    _valueController.text,
+                                                    _selectedDate);
                                               }
                                             },
                                             child: Text('Nova Transação'))

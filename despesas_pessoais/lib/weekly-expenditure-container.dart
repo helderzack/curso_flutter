@@ -1,28 +1,71 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 import './day-expenditure.dart';
 
+List<GlobalKey<DayExpenditureState>> daylyExpenditureKey =
+    List<GlobalKey<DayExpenditureState>>.generate(7, (index) => GlobalKey());
+
 class WeeklyExpenditureContainerState
     extends State<WeeklyExpenditureContainer> {
-  final _daysOfTheWeek =
-      List<DayExpenditure>.generate(
-        7, (index) => 
-        DayExpenditure(
-          0.0, 
-          0.0, 
-          DateFormat('EEEE').
-            format(DateTime.now().
-            add(Duration(days: index))
-          ).substring(0, 1)
-        )
-      );
+  double weeklyAmountSpent = 0.0;
+  final _daysOfTheWeek = List<DayExpenditure>.generate(
+      7,
+      (index) => DayExpenditure(
+          key: daylyExpenditureKey.elementAt(index),
+          dayOfTheWeek: DateTime.now().add(Duration(days: index))));
   final totalExpenditure = 0.0;
+
+  void updateWeeklyExpenditureState(DateTime selectedDate, double amountSpent) {
+    weeklyAmountSpent += amountSpent;
+
+    print('Weekly spent: $weeklyAmountSpent');
+
+    Key key = _daysOfTheWeek
+        .firstWhere((element) =>
+            element.dayOfTheWeek.weekday.compareTo(selectedDate.weekday) == 0)
+        .key;
+
+    daylyExpenditureKey
+        .firstWhere((element) => element.hashCode.compareTo(key.hashCode) == 0)
+        .currentState
+        .addExpense(amountSpent);
+
+    daylyExpenditureKey.forEach((element) {
+      element.currentState.adjustPercentage(
+          calculatePercentage(element.currentState.amountSpent));
+    });
+  }
+
+  void removeExpenditure(DateTime registerDate, double value) {
+    weeklyAmountSpent -= value;
+
+    print('Weekly spent: $weeklyAmountSpent');
+
+    Key key = _daysOfTheWeek
+        .firstWhere((element) =>
+            element.dayOfTheWeek.weekday.compareTo(registerDate.weekday) == 0)
+        .key;
+
+    daylyExpenditureKey
+        .firstWhere((element) => element.hashCode.compareTo(key.hashCode) == 0)
+        .currentState
+        .subtractExpense(value);
+
+    daylyExpenditureKey.forEach((element) {
+      element.currentState.adjustPercentage(
+          calculatePercentage(element.currentState.amountSpent));
+    });
+  }
+
+  double calculatePercentage(double amountSpent) {
+    if (amountSpent == 0) return 0.0;
+    return ((amountSpent * 100) / weeklyAmountSpent) / 100;
+  }
 
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      margin: EdgeInsets.only(left: 10, top: 20, right: 10, bottom: 30),
+      margin: EdgeInsets.only(top: 20, bottom: 30),
       child: Card(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -45,6 +88,8 @@ class WeeklyExpenditureContainerState
 }
 
 class WeeklyExpenditureContainer extends StatefulWidget {
+  WeeklyExpenditureContainer({Key key}) : super(key: key);
+
   @override
   WeeklyExpenditureContainerState createState() {
     return WeeklyExpenditureContainerState();
