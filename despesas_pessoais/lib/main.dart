@@ -49,6 +49,7 @@ class _DespesasPessoaisState extends State<DespesasPessoaisApp> {
     setState(() {
       this._selectedDate = selectedDate;
     });
+    print(_selectedDate);
   }
 
   bool _checkSelectedDateField() {
@@ -64,178 +65,184 @@ class _DespesasPessoaisState extends State<DespesasPessoaisApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        home: Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.purple,
-        title: Text("Despesas Pessoais"),
-      ),
-      body: Column(
-        children: [
-          WeeklyExpenditureContainer(key: weeklyExpenditureKey),
-          hasTransactions
-              ? Expanded(
-                  child: ListView.builder(
-                      itemCount: _transactions.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return _transactions[index];
-                      }),
+      home: Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          backgroundColor: Colors.purple,
+          title: Text("Despesas Pessoais"),
+        ),
+        body: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Column(
+            children: [
+              WeeklyExpenditureContainer(key: weeklyExpenditureKey),
+              hasTransactions
+              ? SizedBox(
+                  height: 300.0,
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                        itemCount: _transactions.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return _transactions[index];
+                        }),
                 )
               : Center(
-                  child: Column(
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(bottom: 15),
-                        child: Text(
-                          'Nenhuma Transação Cadastrada!',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
+                    child: Column(
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(bottom: 15),
+                          child: Text(
+                            'Nenhuma Transação Cadastrada!',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ),
                           ),
                         ),
-                      ),
-                      RotationTransition(
-                        turns: AlwaysStoppedAnimation(350 / 360),
-                        child: Text(
-                          'Z',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 70,
+                        RotationTransition(
+                          turns: AlwaysStoppedAnimation(350 / 360),
+                          child: Text(
+                            'Z',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 70,
+                            ),
                           ),
                         ),
-                      ),
-                      RotationTransition(
-                        turns: AlwaysStoppedAnimation(200 / 360),
-                        child: Text(
-                          'Z',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 70,
+                        RotationTransition(
+                          turns: AlwaysStoppedAnimation(200 / 360),
+                          child: Text(
+                            'Z',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 70,
+                            ),
                           ),
                         ),
-                      ),
-                      RotationTransition(
-                        turns: AlwaysStoppedAnimation(340 / 360),
-                        child: Text(
-                          'Z',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 70,
+                        RotationTransition(
+                          turns: AlwaysStoppedAnimation(340 / 360),
+                          child: Text(
+                            'Z',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 70,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  )
+                      ],
+                    )
+                  ),
+            ],
+          ),
+        ),
+        floatingActionButton: Builder(
+            builder: (context) => FloatingActionButton(
+                backgroundColor: Colors.yellow[600],
+                child: Icon(
+                  Icons.add,
+                  color: Colors.black,
                 ),
-                
-        ],
-      ),
-      floatingActionButton: Builder(
-          builder: (context) => FloatingActionButton(
-              backgroundColor: Colors.yellow[600],
-              child: Icon(
-                Icons.add,
-                color: Colors.black,
-              ),
-              onPressed: () {
-                showModalBottomSheet<void>(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return Container(
-                        child: Form(
-                            key: _formKey,
-                            child: Column(
-                              children: [
-                                Container(
-                                  margin: EdgeInsets.all(10),
-                                  child: TextFormField(
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty)
-                                        return '';
-                                      return null;
-                                    },
-                                    controller: _titleController,
-                                    decoration:
-                                        InputDecoration(hintText: 'Título'),
+                onPressed: () {
+                  showModalBottomSheet<void>(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return Container(
+                          child: Form(
+                              key: _formKey,
+                              child: Column(
+                                children: [
+                                  Container(
+                                    margin: EdgeInsets.all(10),
+                                    child: TextFormField(
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty)
+                                          return '';
+                                        return null;
+                                      },
+                                      controller: _titleController,
+                                      decoration:
+                                          InputDecoration(hintText: 'Título'),
+                                    ),
                                   ),
-                                ),
-                                Container(
-                                  margin: EdgeInsets.all(10),
-                                  child: TextFormField(
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty)
-                                        return '';
-                                      return null;
-                                    },
-                                    inputFormatters: <TextInputFormatter>[
-                                      FilteringTextInputFormatter.digitsOnly
-                                    ],
-                                    controller: _valueController,
-                                    decoration: InputDecoration(
-                                        hintText: 'Valor (R\$)'),
+                                  Container(
+                                    margin: EdgeInsets.all(10),
+                                    child: TextFormField(
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty)
+                                          return '';
+                                        return null;
+                                      },
+                                      inputFormatters: <TextInputFormatter>[
+                                        FilteringTextInputFormatter.digitsOnly
+                                      ],
+                                      controller: _valueController,
+                                      decoration: InputDecoration(
+                                          hintText: 'Valor (R\$)'),
+                                    ),
                                   ),
-                                ),
-                                Container(
-                                  margin: EdgeInsets.all(10),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                          'Data Selecionada: ${_checkSelectedDateField() ? '' : _dateFormatter.format(_selectedDate)}'),
-                                      TextButton(
-                                          style: TextButton.styleFrom(
-                                            primary: Colors.purple,
-                                          ),
-                                          onPressed: () {
-                                            showDatePicker(
-                                              context: context,
-                                              initialDate: DateTime.now(),
-                                              firstDate: DateTime.now(),
-                                              lastDate: DateTime.now()
-                                                  .add(Duration(days: 6)),
-                                            ).then((date) =>
-                                                _setSelectedDate(date));
-                                          },
-                                          child: Text(
-                                            'Selecionar Data',
-                                          ))
-                                    ],
-                                  ),
-                                ),
-                                Container(
+                                  Container(
                                     margin: EdgeInsets.all(10),
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
-                                        ElevatedButton(
-                                            style: ElevatedButton.styleFrom(
-                                                primary: Colors.purple),
+                                        Text(
+                                            'Data Selecionada: ${_checkSelectedDateField() ? '' : _dateFormatter.format(_selectedDate)}'),
+                                        TextButton(
+                                            style: TextButton.styleFrom(
+                                              primary: Colors.purple,
+                                            ),
                                             onPressed: () {
-                                              if (_formKey.currentState
-                                                      .validate() ==
-                                                  false) {
-                                                ScaffoldMessenger.of(context)
-                                                    .showSnackBar(SnackBar(
-                                                        content: Text(
-                                                            'Preencha todos os campos!')));
-                                              } else {
-                                                Navigator.pop(context);
-                                                _createTransaction(
-                                                    _titleController.text,
-                                                    _valueController.text,
-                                                    _selectedDate);
-                                              }
+                                              showDatePicker(
+                                                context: context,
+                                                initialDate: DateTime.now(),
+                                                firstDate: DateTime.now(),
+                                                lastDate: DateTime.now()
+                                                    .add(Duration(days: 6)),
+                                              ).then((date) =>
+                                                  _setSelectedDate(date));
                                             },
-                                            child: Text('Nova Transação'))
+                                            child: Text(
+                                              'Selecionar Data',
+                                            ))
                                       ],
-                                    )),
-                              ],
-                            )),
-                      );
-                    });
-              })),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-    ));
+                                    ),
+                                  ),
+                                  Container(
+                                      margin: EdgeInsets.all(10),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                  primary: Colors.purple),
+                                              onPressed: () {
+                                                if (_formKey.currentState
+                                                        .validate() ==
+                                                    false) {
+                                                  ScaffoldMessenger.of(context)
+                                                      .showSnackBar(SnackBar(
+                                                          content: Text(
+                                                              'Preencha todos os campos!')));
+                                                } else {
+                                                  Navigator.pop(context);
+                                                  _createTransaction(
+                                                      _titleController.text,
+                                                      _valueController.text,
+                                                      _selectedDate);
+                                                }
+                                              },
+                                              child: Text('Nova Transação'))
+                                        ],
+                                      )),
+                                ],
+                              )),
+                        );
+                      });
+                })),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      )
+    );
   }
 }
 
