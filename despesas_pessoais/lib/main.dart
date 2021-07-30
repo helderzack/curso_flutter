@@ -1,4 +1,5 @@
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import './transaction.dart';
 import 'weekly-expenditure-container.dart';
@@ -19,7 +20,7 @@ class _DespesasPessoaisState extends State<DespesasPessoaisApp> {
 
   final _titleController = TextEditingController();
   final _valueController = TextEditingController();
-  final _dateFormatter = DateFormat('yMMMMd');
+  final _dateFormatter = DateFormat('dd/MM/yyyy');
 
   void _removeTransaction(Transaction transaction) {
     String value = transaction.value;
@@ -65,6 +66,11 @@ class _DespesasPessoaisState extends State<DespesasPessoaisApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate
+      ],
+      supportedLocales: [Locale('pt', 'BR')],
       home: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(

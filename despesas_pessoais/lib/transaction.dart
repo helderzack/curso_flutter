@@ -6,7 +6,7 @@ class Transaction extends StatelessWidget {
   final String value;
   final DateTime registerDate;
   final Function removeTransaction;
-  final DateFormat dateFormatter = DateFormat('yMMMMd');
+  final DateFormat dateFormatter = DateFormat('yMMMd', 'pt_BR');
 
   Transaction(
     this.transaction, 
