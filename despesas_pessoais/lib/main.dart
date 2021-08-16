@@ -1,61 +1,63 @@
-import 'package:flutter/services.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+import 'dart:math';
 
-import './transaction.dart';
-import 'weekly-expenditure-container.dart';
+import 'package:despesas_pessoais/components/chart.dart';
+
+import 'models/transaction.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import '../components/transaction_form.dart';
+import '../components/transaction_list.dart';
 
 void main() {
   runApp(DespesasPessoaisApp());
 }
 
-GlobalKey<WeeklyExpenditureContainerState> weeklyExpenditureKey = GlobalKey();
+class DespesasPessoaisApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: MyHomePage(),
+      theme: ThemeData(
+        primarySwatch: Colors.purple,
+        accentColor: Colors.amber,
+        textTheme: ThemeData.light().textTheme.copyWith(
+              headline6: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+      ),
+    );
+  }
+}
 
-class _DespesasPessoaisState extends State<DespesasPessoaisApp> {
-  List<Transaction> _transactions = [];
-  DateTime _selectedDate;
+class _MyHomePageState extends State<MyHomePage> {
+  final List<Transaction> _transactions = [];
 
-  final _formKey = GlobalKey<FormState>();
-
-  final _titleController = TextEditingController();
-  final _valueController = TextEditingController();
-  final _dateFormatter = DateFormat('dd/MM/yyyy');
-
-  void _removeTransaction(Transaction transaction) {
-    String value = transaction.value;
-    DateTime registerDate = transaction.registerDate;
+  void _addTransaction(String title, double value, DateTime selectedDate) {
+    final newTransaction = Transaction(
+        id: Random().nextDouble().toString(),
+        title: title,
+        value: value,
+        date: selectedDate);
 
     setState(() {
-      _transactions.remove(transaction);
+      _transactions.add(newTransaction);
     });
 
-    weeklyExpenditureKey.currentState.removeExpenditure(registerDate, double.parse(value));
+    Navigator.of(context).pop();
   }
 
-  void _createTransaction(String title, String value, DateTime selectedDate) {
-    print(title);
-    print(value);
-    print(selectedDate.toString());
+  void _removeTransaction(String id) {
     setState(() {
-      _transactions
-          .add(Transaction(title, value, _selectedDate, _removeTransaction));
+      _transactions.removeWhere((transaction) => transaction.id == id);
     });
-
-    weeklyExpenditureKey.currentState
-        .updateWeeklyExpenditureState(selectedDate, double.parse(value));
   }
 
-  void _setSelectedDate(DateTime selectedDate) {
-    setState(() {
-      this._selectedDate = selectedDate;
-    });
-    print(_selectedDate);
-  }
-
-  bool _checkSelectedDateField() {
-    if (_selectedDate == null) return true;
-    return false;
+  void _openTransactionForm() {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => TransactionForm(_addTransaction),
+    );
   }
 
   bool get hasTransactions {
@@ -63,198 +65,82 @@ class _DespesasPessoaisState extends State<DespesasPessoaisApp> {
     return true;
   }
 
+  List<Transaction> get _recentTransactions {
+    return _transactions.where((tr) {
+      return tr.date.isAfter(DateTime.now().subtract(Duration(days: 7)));
+    }).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      localizationsDelegates: [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate
-      ],
-      supportedLocales: [Locale('pt', 'BR')],
-      home: Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          backgroundColor: Colors.purple,
-          title: Text("Despesas Pessoais"),
-        ),
-        body: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Column(
-            children: [
-              WeeklyExpenditureContainer(key: weeklyExpenditureKey),
-              hasTransactions
-              ? SizedBox(
-                  height: 300.0,
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                        itemCount: _transactions.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return _transactions[index];
-                        }),
-                )
-              : Center(
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.purple,
+        title: Text("Despesas Pessoais"),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Chart(_recentTransactions),
+            hasTransactions
+                ? TransactionList(_transactions, _removeTransaction)
+                : Center(
                     child: Column(
-                      children: [
-                        Container(
-                          margin: EdgeInsets.only(bottom: 15),
-                          child: Text(
-                            'Nenhuma Transação Cadastrada!',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                            ),
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(bottom: 15),
+                        child: Text(
+                          'Nenhuma Transação Cadastrada!',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
                           ),
                         ),
-                        RotationTransition(
-                          turns: AlwaysStoppedAnimation(350 / 360),
-                          child: Text(
-                            'Z',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 70,
-                            ),
+                      ),
+                      RotationTransition(
+                        turns: AlwaysStoppedAnimation(350 / 360),
+                        child: Text(
+                          'Z',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 70,
                           ),
                         ),
-                        RotationTransition(
-                          turns: AlwaysStoppedAnimation(200 / 360),
-                          child: Text(
-                            'Z',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 70,
-                            ),
+                      ),
+                      RotationTransition(
+                        turns: AlwaysStoppedAnimation(200 / 360),
+                        child: Text(
+                          'Z',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 70,
                           ),
                         ),
-                        RotationTransition(
-                          turns: AlwaysStoppedAnimation(340 / 360),
-                          child: Text(
-                            'Z',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 70,
-                            ),
+                      ),
+                      RotationTransition(
+                        turns: AlwaysStoppedAnimation(340 / 360),
+                        child: Text(
+                          'Z',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 70,
                           ),
                         ),
-                      ],
-                    )
-                  ),
-            ],
-          ),
+                      ),
+                    ],
+                  )),
+          ],
         ),
-        floatingActionButton: Builder(
-            builder: (context) => FloatingActionButton(
-                backgroundColor: Colors.yellow[600],
-                child: Icon(
-                  Icons.add,
-                  color: Colors.black,
-                ),
-                onPressed: () {
-                  showModalBottomSheet<void>(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return Container(
-                          child: Form(
-                              key: _formKey,
-                              child: Column(
-                                children: [
-                                  Container(
-                                    margin: EdgeInsets.all(10),
-                                    child: TextFormField(
-                                      validator: (value) {
-                                        if (value == null || value.isEmpty)
-                                          return '';
-                                        return null;
-                                      },
-                                      controller: _titleController,
-                                      decoration:
-                                          InputDecoration(hintText: 'Título'),
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.all(10),
-                                    child: TextFormField(
-                                      validator: (value) {
-                                        if (value == null || value.isEmpty)
-                                          return '';
-                                        return null;
-                                      },
-                                      inputFormatters: <TextInputFormatter>[
-                                        FilteringTextInputFormatter.digitsOnly
-                                      ],
-                                      controller: _valueController,
-                                      decoration: InputDecoration(
-                                          hintText: 'Valor (R\$)'),
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.all(10),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                            'Data Selecionada: ${_checkSelectedDateField() ? '' : _dateFormatter.format(_selectedDate)}'),
-                                        TextButton(
-                                            style: TextButton.styleFrom(
-                                              primary: Colors.purple,
-                                            ),
-                                            onPressed: () {
-                                              showDatePicker(
-                                                context: context,
-                                                initialDate: DateTime.now(),
-                                                firstDate: DateTime.now(),
-                                                lastDate: DateTime.now()
-                                                    .add(Duration(days: 6)),
-                                              ).then((date) =>
-                                                  _setSelectedDate(date));
-                                            },
-                                            child: Text(
-                                              'Selecionar Data',
-                                            ))
-                                      ],
-                                    ),
-                                  ),
-                                  Container(
-                                      margin: EdgeInsets.all(10),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.end,
-                                        children: [
-                                          ElevatedButton(
-                                              style: ElevatedButton.styleFrom(
-                                                  primary: Colors.purple),
-                                              onPressed: () {
-                                                if (_formKey.currentState
-                                                        .validate() ==
-                                                    false) {
-                                                  ScaffoldMessenger.of(context)
-                                                      .showSnackBar(SnackBar(
-                                                          content: Text(
-                                                              'Preencha todos os campos!')));
-                                                } else {
-                                                  Navigator.pop(context);
-                                                  _createTransaction(
-                                                      _titleController.text,
-                                                      _valueController.text,
-                                                      _selectedDate);
-                                                }
-                                              },
-                                              child: Text('Nova Transação'))
-                                        ],
-                                      )),
-                                ],
-                              )),
-                        );
-                      });
-                })),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      )
+      ),
+      floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.add), onPressed: () => _openTransactionForm(),),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }
 
-class DespesasPessoaisApp extends StatefulWidget {
+class MyHomePage extends StatefulWidget {
   @override
-  _DespesasPessoaisState createState() {
-    return _DespesasPessoaisState();
-  }
+  _MyHomePageState createState() => _MyHomePageState();
 }
