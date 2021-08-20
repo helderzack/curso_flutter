@@ -4,11 +4,16 @@ import 'package:intl/intl.dart';
 
 class TransactionList extends StatelessWidget {
   final List<Transaction> transactions;
-  final void Function(String) onDelete;
+  final void Function(int) onDelete;
 
   TransactionList(this.transactions, this.onDelete);
 
-  _confirmRemovalOfTransaction(BuildContext context, String id) {
+  bool get hasTransactions {
+    if (transactions.length == 0) return false;
+    return true;
+  }
+
+  _confirmRemovalOfTransaction(BuildContext context, int id) {
     showDialog(
         context: context,
         builder: (context) {
@@ -32,47 +37,96 @@ class TransactionList extends StatelessWidget {
             ],
           );
         }).then((value) {
-          if (value == 'OK') {
-            onDelete(id);
-          }
-        });
+      if (value == 'OK') {
+        onDelete(id);
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 430,
-      child: ListView.builder(
-        itemCount: transactions.length,
-        itemBuilder: (context, index) {
-          final transaction = transactions[index];
-          return Card(
-            elevation: 5,
-            margin: EdgeInsets.symmetric(vertical: 8, horizontal: 5),
-            child: ListTile(
-              leading: CircleAvatar(
-                radius: 30,
-                child: Padding(
-                  padding: const EdgeInsets.all(6),
-                  child: FittedBox(child: Text('R\$${transaction.value}')),
+      child: hasTransactions
+          ? ListView.builder(
+              itemCount: transactions.length,
+              itemBuilder: (context, index) {
+                final transaction = transactions[index];
+                return Card(
+                  elevation: 5,
+                  margin: EdgeInsets.symmetric(vertical: 8, horizontal: 5),
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      radius: 30,
+                      child: Padding(
+                        padding: const EdgeInsets.all(6),
+                        child:
+                            FittedBox(child: Text('R\$${transaction.value}')),
+                      ),
+                    ),
+                    title: Text(
+                      transaction.title,
+                      style: Theme.of(context).textTheme.headline6,
+                    ),
+                    subtitle: Text(
+                      DateFormat('d MMM y').format(transaction.date),
+                    ),
+                    trailing: IconButton(
+                      icon: Icon(Icons.delete),
+                      color: Theme.of(context).errorColor,
+                      onPressed: () =>
+                          _confirmRemovalOfTransaction(context, transaction.id),
+                    ),
+                  ),
+                );
+              },
+            )
+          : Center(
+              child: Column(
+              children: [
+                Container(
+                  margin: EdgeInsets.only(bottom: 15),
+                  child: Text(
+                    'Nenhuma Transação Cadastrada!',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
+                  ),
                 ),
-              ),
-              title: Text(
-                transaction.title,
-                style: Theme.of(context).textTheme.headline6,
-              ),
-              subtitle: Text(
-                DateFormat('d MMM y').format(transaction.date),
-              ),
-              trailing: IconButton(
-                icon: Icon(Icons.delete),
-                color: Theme.of(context).errorColor,
-                onPressed: () => _confirmRemovalOfTransaction(context, transaction.id),
-              ),
-            ),
-          );
-        },
-      ),
+                RotationTransition(
+                  turns: AlwaysStoppedAnimation(350 / 360),
+                  child: Text(
+                    'Z',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 70,
+                    ),
+                  ),
+                ),
+                RotationTransition(
+                  turns: AlwaysStoppedAnimation(200 / 360),
+                  child: Text(
+                    'Z',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 70,
+                    ),
+                  ),
+                ),
+                RotationTransition(
+                  turns: AlwaysStoppedAnimation(340 / 360),
+                  child: Text(
+                    'Z',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 70,
+                    ),
+                  ),
+                ),
+              ],
+            )
+          ),
     );
   }
 }

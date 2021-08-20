@@ -1,9 +1,7 @@
-import 'dart:math';
-
-import 'package:despesas_pessoais/components/chart.dart';
-
-import 'models/transaction.dart';
+import 'package:despesas_pessoais/services/transaction_service.dart';
 import 'package:flutter/material.dart';
+import 'models/transaction.dart';
+import '../components/chart.dart';
 import '../components/transaction_form.dart';
 import '../components/transaction_list.dart';
 
@@ -31,14 +29,15 @@ class DespesasPessoaisApp extends StatelessWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  // This variable '_transations' is not being used for anything really.
+  // All the methods that refer to '_transactions' are not being called
+  // The only reason I didn't erase this variable is to not break the referencees to it
   final List<Transaction> _transactions = [];
+  final TransactionService _transactionService = new TransactionService();
 
   void _addTransaction(String title, double value, DateTime selectedDate) {
-    final newTransaction = Transaction(
-        id: Random().nextDouble().toString(),
-        title: title,
-        value: value,
-        date: selectedDate);
+    final newTransaction =
+        Transaction(id: 0, title: title, value: value, date: selectedDate);
 
     setState(() {
       _transactions.add(newTransaction);
@@ -47,7 +46,7 @@ class _MyHomePageState extends State<MyHomePage> {
     Navigator.of(context).pop();
   }
 
-  void _removeTransaction(String id) {
+  void _removeTransaction(int id) {
     setState(() {
       _transactions.removeWhere((transaction) => transaction.id == id);
     });
@@ -58,11 +57,6 @@ class _MyHomePageState extends State<MyHomePage> {
       context: context,
       builder: (context) => TransactionForm(_addTransaction),
     );
-  }
-
-  bool get hasTransactions {
-    if (_transactions.length == 0) return false;
-    return true;
   }
 
   List<Transaction> get _recentTransactions {
@@ -79,62 +73,23 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text("Despesas Pessoais"),
       ),
       body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Chart(_recentTransactions),
-            hasTransactions
-                ? TransactionList(_transactions, _removeTransaction)
-                : Center(
-                    child: Column(
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(bottom: 15),
-                        child: Text(
-                          'Nenhuma Transação Cadastrada!',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                          ),
-                        ),
-                      ),
-                      RotationTransition(
-                        turns: AlwaysStoppedAnimation(350 / 360),
-                        child: Text(
-                          'Z',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 70,
-                          ),
-                        ),
-                      ),
-                      RotationTransition(
-                        turns: AlwaysStoppedAnimation(200 / 360),
-                        child: Text(
-                          'Z',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 70,
-                          ),
-                        ),
-                      ),
-                      RotationTransition(
-                        turns: AlwaysStoppedAnimation(340 / 360),
-                        child: Text(
-                          'Z',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 70,
-                          ),
-                        ),
-                      ),
-                    ],
-                  )),
-          ],
+        child: FutureBuilder<List<Transaction>>(
+          future: _transactionService.getTransactions(),
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Chart(_transactionService.fetchedTransanctions),
+                TransactionList(_transactionService.fetchedTransanctions, _removeTransaction),
+              ],
+            );
+          },
         ),
       ),
       floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add), onPressed: () => _openTransactionForm(),),
+        child: Icon(Icons.add),
+        onPressed: () => _openTransactionForm(),
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
