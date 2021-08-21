@@ -29,26 +29,22 @@ class DespesasPessoaisApp extends StatelessWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  // This variable '_transations' is not being used for anything really.
-  // All the methods that refer to '_transactions' are not being called
-  // The only reason I didn't erase this variable is to not break the referencees to it
-  final List<Transaction> _transactions = [];
+  late List<Transaction> _transactions;
   final TransactionService _transactionService = new TransactionService();
 
   void _addTransaction(String title, double value, DateTime selectedDate) {
     final newTransaction =
         Transaction(id: 0, title: title, value: value, date: selectedDate);
 
-    setState(() {
-      _transactions.add(newTransaction);
+    _transactionService.postTransaction(newTransaction).whenComplete(() {
+      setState(() {});
     });
-
     Navigator.of(context).pop();
   }
 
   void _removeTransaction(int id) {
-    setState(() {
-      _transactions.removeWhere((transaction) => transaction.id == id);
+    _transactionService.deleteTransaction(id).whenComplete(() {
+      setState(() {});
     });
   }
 
@@ -76,13 +72,20 @@ class _MyHomePageState extends State<MyHomePage> {
         child: FutureBuilder<List<Transaction>>(
           future: _transactionService.getTransactions(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Chart(_transactionService.fetchedTransanctions),
-                TransactionList(_transactionService.fetchedTransanctions, _removeTransaction),
-              ],
-            );
+            if (snapshot.hasData) {
+              _transactions = snapshot.data;
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Chart(_recentTransactions),
+                  TransactionList(_transactions, _removeTransaction),
+                ],
+              );
+            } else {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
           },
         ),
       ),

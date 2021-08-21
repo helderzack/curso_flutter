@@ -21,9 +21,9 @@ class Transaction {
   }
 
   Map<String, dynamic> toJson() => {
-    'id': id,
-    'title': title,
-    'value': value,
-    'date': date,
+        'id': id,
+        'title': title,
+        'value': value,
+        'date': date.toIso8601String(),
   };
 }
