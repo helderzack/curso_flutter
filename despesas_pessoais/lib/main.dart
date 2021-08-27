@@ -1,11 +1,12 @@
-import 'package:despesas_pessoais/services/transaction_service.dart';
 import 'package:flutter/material.dart';
-import 'models/transaction.dart';
+import 'models/financial_transaction.dart';
 import '../components/chart.dart';
-import '../components/transaction_form.dart';
-import '../components/transaction_list.dart';
+import 'components/financial_transaction_form.dart';
+import 'components/financial_transaction_list.dart';
+import '../db/database_helper.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(DespesasPessoaisApp());
 }
 
@@ -28,64 +29,77 @@ class DespesasPessoaisApp extends StatelessWidget {
   }
 }
 
+class MyHomePage extends StatefulWidget {
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
 class _MyHomePageState extends State<MyHomePage> {
-  late List<Transaction> _transactions;
-  final TransactionService _transactionService = new TransactionService();
 
   void _addTransaction(String title, double value, DateTime selectedDate) {
     final newTransaction =
-        Transaction(id: 0, title: title, value: value, date: selectedDate);
+        FinancialTransaction(title: title, value: value, date: selectedDate);
 
-    _transactionService.postTransaction(newTransaction).whenComplete(() {
-      setState(() {});
-    });
+    DatabaseHelper.instance.addFinancialTransaction(newTransaction);
     Navigator.of(context).pop();
+    setState(() {});
   }
 
   void _removeTransaction(int id) {
-    _transactionService.deleteTransaction(id).whenComplete(() {
-      setState(() {});
+    setState(() {
+      DatabaseHelper.instance.removeFinancialTransaction(id);
     });
   }
 
   void _openTransactionForm() {
     showModalBottomSheet(
       context: context,
-      builder: (context) => TransactionForm(_addTransaction),
+      builder: (context) => FinancialTransactionForm(_addTransaction),
     );
   }
 
-  List<Transaction> get _recentTransactions {
-    return _transactions.where((tr) {
+  List<FinancialTransaction> _getRecentTransactions(
+      List<FinancialTransaction> transactions) {
+    return transactions.where((tr) {
       return tr.date.isAfter(DateTime.now().subtract(Duration(days: 7)));
     }).toList();
   }
 
   @override
   Widget build(BuildContext context) {
+    final appBar = AppBar(
+      backgroundColor: Colors.purple,
+      title: Text("Despesas Pessoais"),
+    );
+
+    final availableHeight = MediaQuery.of(context).size.height - 
+      appBar.preferredSize.height - MediaQuery.of(context).padding.top;
+
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.purple,
-        title: Text("Despesas Pessoais"),
-      ),
+      appBar: appBar,
       body: SingleChildScrollView(
-        child: FutureBuilder<List<Transaction>>(
-          future: _transactionService.getTransactions(),
-          builder: (BuildContext context, AsyncSnapshot snapshot) {
-            if (snapshot.hasData) {
-              _transactions = snapshot.data;
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Chart(_recentTransactions),
-                  TransactionList(_transactions, _removeTransaction),
-                ],
-              );
-            } else {
+        child: FutureBuilder<List<FinancialTransaction>>(
+          future: DatabaseHelper.instance.getFinancialTransaction(),
+          builder: (BuildContext context,
+              AsyncSnapshot<List<FinancialTransaction>> snapshot) {
+            if (!snapshot.hasData) {
               return Center(
                 child: CircularProgressIndicator(),
               );
             }
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Container(
+                  height: availableHeight * 0.3, 
+                  child: Chart(_getRecentTransactions(snapshot.data!))
+                ),
+                Container(
+                  height: availableHeight * 0.7,
+                  child: FinancialTransactionList(snapshot.data!, _removeTransaction)
+                ),
+              ],
+            );
           },
         ),
       ),
@@ -96,9 +110,4 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
-}
-
-class MyHomePage extends StatefulWidget {
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
 }

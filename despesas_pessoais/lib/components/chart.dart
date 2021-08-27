@@ -1,11 +1,11 @@
 import 'package:despesas_pessoais/components/chart_bar.dart';
 import '../components/chart_bar.dart';
-import '../models/transaction.dart';
+import '../models/financial_transaction.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 
 class Chart extends StatelessWidget {
-  final List<Transaction> recentTransactions;
+  final List<FinancialTransaction> recentTransactions;
 
   Chart(this.recentTransactions);
 

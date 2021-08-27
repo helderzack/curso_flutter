@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import '../models/transaction.dart';
+import '../models/financial_transaction.dart';
 import 'package:intl/intl.dart';
 
-class TransactionList extends StatelessWidget {
-  final List<Transaction> transactions;
+class FinancialTransactionList extends StatelessWidget {
+  final List<FinancialTransaction> transactions;
   final void Function(int) onDelete;
 
-  TransactionList(this.transactions, this.onDelete);
+  FinancialTransactionList(this.transactions, this.onDelete);
 
   bool get hasTransactions {
     if (transactions.length == 0) return false;
@@ -48,10 +48,8 @@ class TransactionList extends StatelessWidget {
     return Container(
       height: 430,
       child: hasTransactions
-          ? ListView.builder(
-              itemCount: transactions.length,
-              itemBuilder: (context, index) {
-                final transaction = transactions[index];
+          ? ListView(
+              children: transactions.map((transaction) {
                 return Card(
                   elevation: 5,
                   margin: EdgeInsets.symmetric(vertical: 8, horizontal: 5),
@@ -75,11 +73,11 @@ class TransactionList extends StatelessWidget {
                       icon: Icon(Icons.delete),
                       color: Theme.of(context).errorColor,
                       onPressed: () =>
-                          _confirmRemovalOfTransaction(context, transaction.id),
+                          _confirmRemovalOfTransaction(context, transaction.id!),
                     ),
                   ),
                 );
-              },
+              }).toList(),
             )
           : Center(
               child: Column(

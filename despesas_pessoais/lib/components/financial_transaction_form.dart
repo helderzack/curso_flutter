@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class TransactionForm extends StatefulWidget {
+class FinancialTransactionForm extends StatefulWidget {
   final void Function(String, double, DateTime) onSubmit;
 
-  TransactionForm(this.onSubmit);
+  FinancialTransactionForm(this.onSubmit);
 
   @override
-  TransactionFormState createState() => TransactionFormState();
+  FinancialTransactionFormState createState() => FinancialTransactionFormState();
 }
 
-class TransactionFormState extends State<TransactionForm> {
+class FinancialTransactionFormState extends State<FinancialTransactionForm> {
   final _titleController = TextEditingController();
   final _valueController = TextEditingController();
   DateTime _selectedDate = DateTime.now();
