@@ -35,6 +35,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  bool _showChart = false;
 
   void _addTransaction(String title, double value, DateTime selectedDate) {
     final newTransaction =
@@ -67,13 +68,28 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    bool isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+
     final appBar = AppBar(
       backgroundColor: Colors.purple,
       title: Text("Despesas Pessoais"),
+      actions: [
+        if (isLandscape)
+          IconButton(
+            icon: Icon(_showChart ? Icons.list : Icons.stacked_bar_chart),
+            onPressed: () {
+              setState(() {
+                _showChart = !_showChart;
+              });
+            },
+          ),
+      ],
     );
 
-    final availableHeight = MediaQuery.of(context).size.height - 
-      appBar.preferredSize.height - MediaQuery.of(context).padding.top;
+    final availableHeight = MediaQuery.of(context).size.height -
+        appBar.preferredSize.height -
+        MediaQuery.of(context).padding.top;
 
     return Scaffold(
       appBar: appBar,
@@ -90,14 +106,15 @@ class _MyHomePageState extends State<MyHomePage> {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Container(
-                  height: availableHeight * 0.3, 
-                  child: Chart(_getRecentTransactions(snapshot.data!))
-                ),
-                Container(
-                  height: availableHeight * 0.7,
-                  child: FinancialTransactionList(snapshot.data!, _removeTransaction)
-                ),
+                if (_showChart || !isLandscape)
+                  Container(
+                      height: availableHeight * (isLandscape ? 0.7 : 0.3),
+                      child: Chart(_getRecentTransactions(snapshot.data!))),
+                if (!_showChart || !isLandscape)
+                  Container(
+                      height: availableHeight * 0.7,
+                      child: FinancialTransactionList(
+                          snapshot.data!, _removeTransaction)),
               ],
             );
           },

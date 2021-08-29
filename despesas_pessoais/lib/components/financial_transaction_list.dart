@@ -72,59 +72,34 @@ class FinancialTransactionList extends StatelessWidget {
                     trailing: IconButton(
                       icon: Icon(Icons.delete),
                       color: Theme.of(context).errorColor,
-                      onPressed: () =>
-                          _confirmRemovalOfTransaction(context, transaction.id!),
+                      onPressed: () => _confirmRemovalOfTransaction(
+                          context, transaction.id!),
                     ),
                   ),
                 );
               }).toList(),
             )
-          : Center(
-              child: Column(
-              children: [
-                Container(
-                  margin: EdgeInsets.only(bottom: 15),
-                  child: Text(
-                    'Nenhuma Transação Cadastrada!',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
+          : LayoutBuilder(
+              builder: (context, constraints) {
+                return Column(
+                  children: [
+                    SizedBox(height: 20),
+                    Text(
+                      'Nenhuma Transação Cadastrada!',
+                      style: Theme.of(context).textTheme.headline6,
                     ),
-                  ),
-                ),
-                RotationTransition(
-                  turns: AlwaysStoppedAnimation(350 / 360),
-                  child: Text(
-                    'Z',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 70,
+                    SizedBox(height: 20),
+                    Container(
+                      height: constraints.maxHeight * 0.6,
+                      child: Image.asset(
+                        'assets/images/waiting.png',
+                        fit: BoxFit.cover,
+                      ),
                     ),
-                  ),
-                ),
-                RotationTransition(
-                  turns: AlwaysStoppedAnimation(200 / 360),
-                  child: Text(
-                    'Z',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 70,
-                    ),
-                  ),
-                ),
-                RotationTransition(
-                  turns: AlwaysStoppedAnimation(340 / 360),
-                  child: Text(
-                    'Z',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 70,
-                    ),
-                  ),
-                ),
-              ],
-            )
-          ),
+                  ],
+                );
+              },
+            ),
     );
   }
 }
