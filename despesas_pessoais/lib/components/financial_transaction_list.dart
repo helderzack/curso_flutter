@@ -69,12 +69,22 @@ class FinancialTransactionList extends StatelessWidget {
                     subtitle: Text(
                       DateFormat('d MMM y').format(transaction.date),
                     ),
-                    trailing: IconButton(
-                      icon: Icon(Icons.delete),
-                      color: Theme.of(context).errorColor,
-                      onPressed: () => _confirmRemovalOfTransaction(
-                          context, transaction.id!),
-                    ),
+                    trailing: MediaQuery.of(context).size.width > 400
+                        ? TextButton.icon(
+                            icon: Icon(Icons.delete),
+                            label: Text('Remove'),
+                            style: TextButton.styleFrom(
+                              primary: Theme.of(context).errorColor
+                            ),
+                            onPressed: () => _confirmRemovalOfTransaction(
+                                context, transaction.id!),
+                          )
+                        : IconButton(
+                            icon: Icon(Icons.delete),
+                            color: Theme.of(context).errorColor,
+                            onPressed: () => _confirmRemovalOfTransaction(
+                                context, transaction.id!),
+                          ),
                   ),
                 );
               }).toList(),
