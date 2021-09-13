@@ -10,7 +10,85 @@ import '../db/database_helper.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(DespesasPessoaisApp());
+  // runApp(DespesasPessoaisApp());
+  runApp(LoginPage());
+}
+
+class LoginPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: LoginPageHome(),
+      theme: ThemeData(
+        primarySwatch: Colors.purple,
+        // accentColor: Colors.amber,
+        textTheme: ThemeData.light().textTheme.copyWith(
+              headline6: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+      ),
+    );
+  }
+}
+
+class LoginPageHome extends StatefulWidget {
+  @override
+  _LoginPageHomeState createState() => _LoginPageHomeState();
+}
+
+class _LoginPageHomeState extends State<LoginPageHome> {
+  void login() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MyHomePage(),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Login Page'),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Container(
+              margin: EdgeInsets.all(10),
+              child: TextField(
+                decoration: InputDecoration(labelText: 'Username'),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.all(10),
+              child: TextField(
+                decoration: InputDecoration(labelText: 'Password'),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.all(10),
+              child: ElevatedButton(
+                onPressed: () {
+                  login();
+                },
+                child: Text(
+                  'Login',
+                  style: TextStyle(
+                    fontSize: 20,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 class DespesasPessoaisApp extends StatelessWidget {
@@ -19,8 +97,12 @@ class DespesasPessoaisApp extends StatelessWidget {
     return MaterialApp(
       home: MyHomePage(),
       theme: ThemeData(
-        primarySwatch: Colors.purple,
-        accentColor: Colors.amber,
+        colorScheme: ColorScheme.light(
+          primary: Colors.purple,
+          secondary: Colors.amber,
+        ),
+        // primarySwatch: Colors.purple,
+        // accentColor: Colors.amber,
         textTheme: ThemeData.light().textTheme.copyWith(
               headline6: TextStyle(
                 fontSize: 18,
@@ -47,6 +129,10 @@ class _MyHomePageState extends State<MyHomePage> {
     DatabaseHelper.instance.addFinancialTransaction(newTransaction);
     Navigator.of(context).pop();
     setState(() {});
+  }
+
+  void _logout() {
+    Navigator.pop(context);
   }
 
   void _removeTransaction(int id) {
@@ -89,6 +175,8 @@ class _MyHomePageState extends State<MyHomePage> {
     final iconList = Platform.isIOS ? CupertinoIcons.square_list : Icons.list;
     final chartList =
         Platform.isIOS ? CupertinoIcons.chart_bar : Icons.stacked_bar_chart;
+    final logoutList =
+        Platform.isIOS ? CupertinoIcons.arrow_left : Icons.logout;
 
     final actions = <Widget>[
       if (isLandscape)
@@ -104,9 +192,13 @@ class _MyHomePageState extends State<MyHomePage> {
         Platform.isIOS ? CupertinoIcons.add : Icons.add,
         () => _openTransactionForm(),
       ),
+      _getIconButton(logoutList, 
+      () => _logout(),
+      ),
     ];
 
     final appBar = AppBar(
+      automaticallyImplyLeading: false,
       backgroundColor: Colors.purple,
       title: Text("Despesas Pessoais"),
       actions: actions,
@@ -164,6 +256,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ? Container()
                 : FloatingActionButton(
                     child: Icon(Icons.add),
+                    backgroundColor: Theme.of(context).colorScheme.secondary,
                     onPressed: () => _openTransactionForm(),
                   ),
             floatingActionButtonLocation:
